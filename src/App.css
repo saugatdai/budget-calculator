@@ -185,3 +185,17 @@ label {
     flex: 0 0 50%;
   }
 }
+
+main{
+  background: #fff !important; 
+  padding: 10px;
+  margin: 10px;
+}
+ul{
+  padding: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+ul li{
+  margin: 10px !important;
+}
