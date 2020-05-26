@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import './App.css';
 import { ExpenseList } from './components/ExpenseList';
 import { ExpenseForm } from './components/ExpenseForm';
 import { Alert } from './components/Alert';
 
-const initialExpenses = [
-  { id: uuid(), charge: 'rent', amount: 1600 },
-  { id: uuid(), charge: 'car payment', amount: 400 },
-  { id: uuid(), charge: 'credit card bill', amount: 1200 }
-];
+// const initialExpenses = [
+//   { id: uuid(), charge: 'rent', amount: 1600 },
+//   { id: uuid(), charge: 'car payment', amount: 400 },
+//   { id: uuid(), charge: 'credit card bill', amount: 1200 }
+// ];
+
+const initialExpenses = localStorage.getItem('expenses') ? JSON.parse(localStorage.getItem('expenses')) : [];
 
 
 function App() {
@@ -26,6 +28,10 @@ function App() {
   const [edit, setEdit] = useState(false);
   // edit item
   const [id, setId] = useState(0);
+  // ****************** useEffect ****************************
+  useEffect(() => {
+    localStorage.setItem('expenses', JSON.stringify(expenses), [expenses]);
+  })
   // ****************** Functionality ****************************
   const handleCharge = e => {
     setCharge(e.target.value);
@@ -43,15 +49,15 @@ function App() {
   const handleSubmit = e => {
     e.preventDefault();
     if (charge !== '' && amount > 0) {
-      if(edit){
+      if (edit) {
         let tempExpenses = expenses.map(item => {
-          return item.id === id ?{...item, charge,amount}:item;
+          return item.id === id ? { ...item, charge, amount } : item;
         });
         setExpenses(tempExpenses);
         setEdit(false);
         handleAlert({ type: 'success', text: 'item edited' });
 
-      }else{
+      } else {
         setExpenses([...expenses, { id: uuid(), amount, charge }]);
         handleAlert({ type: 'success', text: 'item added' });
       }
@@ -77,7 +83,7 @@ function App() {
   // handle delete
   const handleEdit = (id) => {
     let expense = expenses.find(item => item.id === id);
-    let {charge, amount} = expense;
+    let { charge, amount } = expense;
     setCharge(charge);
     setAmount(amount);
     setEdit(true);
@@ -93,8 +99,8 @@ function App() {
           amount={amount}
           handleAmount={handleAmount}
           handleCharge={handleCharge}
-          handleSubmit={handleSubmit} 
-          edit={edit}/>
+          handleSubmit={handleSubmit}
+          edit={edit} />
         <ExpenseList expenses={expenses} handleDelete={handleDelete} handleEdit={handleEdit} clearItems={clearItems} />
       </main>
       <h1>
